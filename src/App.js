@@ -1,22 +1,45 @@
-import logo from './logo.svg';
+
 import './App.css';
+import Header from "./components/header/header";
+import Slider from "./components/slider/slider";
+import {useEffect, useState} from "react";
+import axios from "axios";
+import Special from "./components/special";
+import Latest from "./components/latest";
+import Upcomming from "./components/upcomming";
+import LatestSeries from "./components/latestSeries";
+import Hottest from "./components/hottest";
+import Recommend from "./components/recommend";
 
 function App() {
+
+    const [posts, setPosts] = useState([]);
+
+    Slider.defaultProps = {
+        sliderData: []
+    };
+
+    useEffect(() => {
+        axios.get('https://cdn.playco.tv/api/data/home')
+            .then(response => {
+                setPosts(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+    // console.log(posts)
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Header />
+          <Slider sliderData={posts.data?.slider}/>
+          <Special specialData={posts.data?.special}/>
+          <Latest latestData={posts.data?.latest} />
+          <Hottest hottestData={posts.data?.hottest} />
+          <Upcomming upcommingData={posts.data?.upcomming} />
+          <LatestSeries latestSeriesData={posts.data?.latestSeries} />
+          <Recommend recommendData={posts.data?.recommend} />
       </header>
     </div>
   );
